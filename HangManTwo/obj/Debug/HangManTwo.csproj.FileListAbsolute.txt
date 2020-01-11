@@ -1,0 +1,6 @@
+C:\Users\Noah\Desktop\C# Projects\HangManTwo\HangManTwo\bin\Debug\HangManTwo.exe.config
+C:\Users\Noah\Desktop\C# Projects\HangManTwo\HangManTwo\bin\Debug\HangManTwo.exe
+C:\Users\Noah\Desktop\C# Projects\HangManTwo\HangManTwo\bin\Debug\HangManTwo.pdb
+C:\Users\Noah\Desktop\C# Projects\HangManTwo\HangManTwo\obj\Debug\HangManTwo.csprojAssemblyReference.cache
+C:\Users\Noah\Desktop\C# Projects\HangManTwo\HangManTwo\obj\Debug\HangManTwo.exe
+C:\Users\Noah\Desktop\C# Projects\HangManTwo\HangManTwo\obj\Debug\HangManTwo.pdb
