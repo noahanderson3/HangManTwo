@@ -16,48 +16,67 @@ namespace HangManTwo
 
         public static void Main()
         {
-            //Welcome message and choose 1p or 2p
-            WriteLine("Welcome to Hangman!");
-            WriteLine("Would you like to play Single-Player or 2-Player? (1 for Single/2 for 2-Player)");
-            char gameMode = ReadKey().KeyChar;
-            WriteLine($"{Environment.NewLine}");
+            char gameMode;
+            // !READ!
+            // Attempts to continously ask the user for an option until a valid one is returned
+            do
+            {
+                //Welcome message and choose 1p or 2p
+                WriteLine("Welcome to Hangman!");
+                WriteLine("Would you like to play Single-Player or 2-Player? (1 for Single/2 for 2-Player)");
+                gameMode = ReadKey().KeyChar;
+                Clear();
+            } while (gameMode != '1' || gameMode != '2');
+
+            string secretWord = "";
 
             if (gameMode == '1') //Single player gives you a word from a selected category
             {
                 //Categories and randomization
-                WriteLine("Please choose your category:" +
-                    "\n1) Fruit" +
-                    "\n2) Pizza Toppings");
-                char category = ReadKey().KeyChar;
-                string secretWord = Word(category);
-               // int attempts = secretWord.Length - 2; //# of lives 
 
-                StringBuilder hidWord = BuildBoard(Word(category));
-                WhichGuess(secretWord, hidWord);
-                while (guessCount < (secretWord.Length + 1) && attempts > 1 && wordGuessed == false)
-                {
-                    GuessAgain(secretWord, hidWord);
-                }
+                // !READ!
+                //Its better to write separate lines, because this makes code more easier to understand and readable
+                WriteLine("Please choose your category:");
+                WriteLine("1) Fruit");
+                WriteLine("2) Pizza Toppings");
+
+                secretWord = Word(ReadKey().KeyChar);
+                // int attempts = secretWord.Length - 2; //# of lives 
             }
             else if (gameMode == '2')
             {
                 WriteLine("Enter the secret word");
-                string secretWord = ReadLine(); //the secret word
+                secretWord = ReadLine(); //the secret word
                 Clear();
-                StringBuilder hidWord = BuildBoard(secretWord);
-
-                WhichGuess(secretWord, hidWord);
-                while (guessCount < secretWord.Length && attempts > 1 && wordGuessed == false)
-                {
-                    GuessAgain(secretWord, hidWord);
-                }
             }
-            
+
+            // !READ!
+            // Because this code is similar in both game modes, its better to extract this code out to prevent duplication
+            // It also means if you ever want to change the logic in how this works, you only need to change it once
+            StringBuilder hidWord = BuildBoard(secretWord);
+            WhichGuess(secretWord, hidWord);
+            while (guessCount < (secretWord.Length + 1) && attempts > 1 && wordGuessed == false)
+            {
+                GuessAgain(secretWord, hidWord);
+            }
         }
+
+        // !READ!
+        // It is recommended to remove "static" on the function. Static means you can use this function without an instance of a class
+        // Its best practice to not use static unless you absolutely need it. Otherwise, a private or public function is better
+        // However, because you are calling this function inside another static functio "Main", it is required to be static
+        // If you do try to improve on this, extracting this new information into another class will fix this problem
         public static string Word(char category)
         {
             string secretWord;
 
+            // !READ!
+            // As you can see in the old code, there was repetition between categories. You would be taking the string
+            // Calculating a random numeber, and picked from the array
+            // Since the logic is the same, it's better to try to minimise repetition
+            // An easy way is to simply use the if statement only for picking which aray to use
+
+            /*
             string[] fruit = { "apple", "bananna", "orange", "pear","kiwi"};
             string[] pizzaToppings = { "pineapple", "pepperoni", "mushroom", "spinach", "sausage" };
             
@@ -76,8 +95,30 @@ namespace HangManTwo
 
                 return secretWord;
             }
+            */
+
+            string[] fruit = { "apple", "bananna", "orange", "pear", "kiwi" };
+            string[] pizzaToppings = { "pineapple", "pepperoni", "mushroom", "spinach", "sausage" };
+            string[] chosenCategory = null;
+
+            // Code to check category, and set chosenCategory appropriately
+            switch (category)
+            {
+                case '1':
+                    chosenCategory = fruit;
+                    break;
+                case '2':
+                    chosenCategory = pizzaToppings;
+                    break;
+            }
+
+            Random word = new Random();
+            int n = word.Next(0, chosenCategory.Length);
+            secretWord = chosenCategory[n];
+
+            return secretWord;
         }
-       
+
         public static void GuessAgain(string secretWord, StringBuilder hidWord)
         {
             WriteLine("Would you like to guess a letter again? (Y/N)");
@@ -86,7 +127,7 @@ namespace HangManTwo
                 Guess(secretWord, hidWord);
 
             else if (goAgain == "n")
-                Guess(secretWord);          
+                Guess(secretWord);
         }
 
         public static StringBuilder BuildBoard(string secretWord)
@@ -98,13 +139,13 @@ namespace HangManTwo
                 hidWord[i] = '_';
             }
 
-            
-         
+
+
             WriteLine($"The secret word is:{hidWord}");
 
             WriteLine("Console has been cleared so your word is now secret" +
                 $"\n The secret word is:{hidWord}" +
-                $"\n You start out with {attempts-1} attempts" +
+                $"\n You start out with {attempts - 1} attempts" +
                 $"\n You can guess the entire word or just a letter at a time" +
                 $"\n ");
 
@@ -113,7 +154,7 @@ namespace HangManTwo
             return hidWord;
         }
 
-        public static void Guess(string secretWord,StringBuilder hidWord) 
+        public static void Guess(string secretWord, StringBuilder hidWord)
         {
             WriteLine($"\nGuess a letter:");
             char guessLetter = ReadKey().KeyChar;
@@ -138,7 +179,7 @@ namespace HangManTwo
             else
             {
                 WriteLine($"Your guess {guessLetter} was correct!");
-                for(int i = k; i< secretWord.Length; i++)
+                for (int i = k; i < secretWord.Length; i++)
                 {
                     if (guessLetter == secretWord[i])
                         hidWord[i] = guessLetter;
@@ -159,10 +200,10 @@ namespace HangManTwo
         }
         public static void StatusUpdate()
         {
-            WriteLine($"You currently have {attempts-1} attempts left" +
+            WriteLine($"You currently have {attempts - 1} attempts left" +
                 $"\n You have used these letters");
             OutLettersUsed();
-        } 
+        }
         public static void Guess(string secretWord)
         {
             WriteLine("Please enter your guess for the word:");
@@ -209,7 +250,7 @@ namespace HangManTwo
         public static void CurrentWord(StringBuilder hidWord, string secretWord)
         {
             WriteLine("The word is now:");
-            for(int i = 0; i < hidWord.Length; i++)
+            for (int i = 0; i < hidWord.Length; i++)
             {
                 if (hidWord.ToString() == secretWord)
                 {
@@ -218,8 +259,8 @@ namespace HangManTwo
                     wordGuessed = true;
                 }
                 Write($"{hidWord[i]}");
-                
-            }    
+
+            }
             WriteLine($"{Environment.NewLine}");
         }
     }
